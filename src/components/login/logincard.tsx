@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useContext, useState } from "react";
-import AuthContext from "@/context/authprovider";
+import { useState } from "react";
+import useAuth from "@/hooks/useAuth";
 
 function LoginCard() {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
-  const { push } = useRouter();
-  const { auth, setAuth } = useContext(AuthContext);
+  const router = useRouter();
+  const { setAuth } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const handleSubmit = async (e: any) => {
@@ -31,7 +31,7 @@ function LoginCard() {
         setPassword("");
         setAuth({ isAuthenticated: true, accessToken: data.accessToken });
 
-        push("/todolist");
+        router.push("/todolist");
       } else {
         console.error("Login failed");
       }

@@ -8,8 +8,18 @@ import Footer from "@/components/ui/footer";
 import Socials from "@/components/utils/socials";
 import AnimatedPage from "@/components/animations/animatedpage";
 import Todolist from "@/components/todolist/todolist";
+import useAuth from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 function TodolistPage() {
+  const { auth } = useAuth();
+  const router = useRouter();
+  useEffect(() => {
+    // Redirect to login if not authenticated
+    if (!auth.isAuthenticated) {
+      router.replace("/login");
+    }
+  }, [auth, router]);
   const navigation = [
     {
       name: "Home",
