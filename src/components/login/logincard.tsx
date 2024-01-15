@@ -25,9 +25,11 @@ function LoginCard() {
       });
 
       if (response.ok) {
+        const data = await response.json();
+
         setUsername("");
         setPassword("");
-        console.log(response);
+        setAuth({ isAuthenticated: true, accessToken: data.accessToken });
 
         push("/todolist");
       } else {
