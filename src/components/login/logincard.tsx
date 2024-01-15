@@ -1,11 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import AuthContext from "@/context/authprovider";
 
 function LoginCard() {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
   const { push } = useRouter();
+  const { auth, setAuth } = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const handleSubmit = async (e: any) => {
@@ -14,6 +16,7 @@ function LoginCard() {
     try {
       const response = await fetch(url, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username,
@@ -24,6 +27,7 @@ function LoginCard() {
       if (response.ok) {
         setUsername("");
         setPassword("");
+        console.log(response);
 
         push("/todolist");
       } else {
