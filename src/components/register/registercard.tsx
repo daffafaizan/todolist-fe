@@ -20,6 +20,11 @@ function RegisterCard() {
           className="w-full rounded-md bg-[#edefe7] placeholder:text-sm px-2 py-1"
           placeholder="Password"
         />
+        <input
+          type="password"
+          className="w-full rounded-md bg-[#edefe7] placeholder:text-sm px-2 py-1"
+          placeholder="Confirm password"
+        />
         <button className="mt-4 w-full inline-flex justify-center rounded-md border border-transparent bg-cyan-500 px-2 py-1 text-sm font-medium text-white hover:bg-cyan-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
           Sign up
         </button>

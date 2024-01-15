@@ -21,7 +21,7 @@ function LoginCard() {
         </button>
       </form>
       <div className="text-xs flex flex-row gap-1">
-        <span>Don`&apos`t have an account?</span>
+        <span>Don&apos;t have an account?</span>
         <a className="text-cyan-500 hover:text-cyan-600" href="/register">
           Register
         </a>
