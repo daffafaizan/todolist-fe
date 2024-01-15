@@ -9,7 +9,7 @@ import Socials from "@/components/utils/socials";
 import AnimatedPage from "@/components/animations/animatedpage";
 import Todolist from "@/components/todolist/todolist";
 
-function Projects() {
+function TodolistPage() {
   const navigation = [
     {
       name: "Home",
@@ -48,4 +48,4 @@ function Projects() {
   );
 }
 
-export default Projects;
+export default TodolistPage;
