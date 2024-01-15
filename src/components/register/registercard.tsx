@@ -1,10 +1,11 @@
 "use client";
 
-import { navigate } from "@/actions/redirect";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 function RegisterCard() {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/register`;
+  const { push } = useRouter();
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -29,7 +30,7 @@ function RegisterCard() {
         setPassword("");
         setConfPassword("");
 
-        navigate("/login");
+        push("/login");
       } else {
         console.error("Registration failed");
       }

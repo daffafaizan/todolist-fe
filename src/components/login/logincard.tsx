@@ -1,10 +1,11 @@
 "use client";
 
-import { navigate } from "@/actions/redirect";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 function LoginCard() {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
+  const { push } = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const handleSubmit = async (e: any) => {
@@ -24,7 +25,7 @@ function LoginCard() {
         setUsername("");
         setPassword("");
 
-        navigate("/todolist");
+        push("/todolist");
       } else {
         console.error("Login failed");
       }
