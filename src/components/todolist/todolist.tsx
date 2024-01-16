@@ -178,7 +178,6 @@ function Todolist() {
       });
       if (response.ok) {
         setTodos(newTodos);
-        localStorage.setItem("todos", JSON.stringify(newTodos));
         toast.success("Task deleted!");
       } else {
         console.log("Todolist delete failed.");
@@ -208,13 +207,12 @@ function Todolist() {
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          completed: !todo?.completed,
+          completed: editedTodo.completed,
         }),
       });
       if (response.ok && todo?.completed == true) {
         toast.success("Task unfinished!");
-      }
-      if (response.ok && todo?.completed == false) {
+      } else if (response.ok && todo?.completed == false) {
         toast.success("Task finished!");
       } else {
         console.log("Todolist completion change failed.");
