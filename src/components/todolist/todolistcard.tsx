@@ -14,12 +14,14 @@ function TodolistCard({
   todos,
   setTodos,
   handleEdit,
+  handleDelete,
   handleSelectPriority,
 }: {
   todo: any;
   todos: any;
   setTodos: any;
   handleEdit: any;
+  handleDelete: any;
   handleSelectPriority: any;
 }) {
   let [isOpen, setIsOpen] = useState(false);
@@ -31,13 +33,6 @@ function TodolistCard({
   function openModal() {
     setIsOpen(true);
   }
-
-  const handleDelete = (id: string) => {
-    const newTodos = todos.filter((todo: any) => todo.id !== id);
-    setTodos(newTodos);
-    localStorage.setItem("todos", JSON.stringify(newTodos));
-    toast.success("Successfully deleted task");
-  };
 
   const handleToggleCompleted = (id: string) => {
     setTodos((prevTodos: any) =>

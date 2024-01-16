@@ -32,7 +32,7 @@ function Todolist() {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
+        setTodos(data.todolists);
       } else {
         console.log("Todolist fetch failed.");
       }
@@ -42,32 +42,39 @@ function Todolist() {
   }, [url]);
 
   useEffect(() => {
-    //localStorage.clear() // Debug clear
-    try {
-      const storedTodos = JSON.parse(localStorage.getItem("todos") ?? "[]");
-      handleGetAllTodo();
-      if (Array.isArray(storedTodos)) {
-        setTodos(storedTodos);
-      }
-    } catch (error) {
-      console.error("Error parsing JSON from local storage:", error);
-    }
+    handleGetAllTodo();
   }, [handleGetAllTodo]);
 
-  const handleAddTodo = () => {
-    if (title == "") {
-      toast.error("Title cannot be empty!");
-    } else {
-      const newTodo: Todo = {
-        id: uuid(),
-        title: title,
-        content: content,
-        completed: false,
-        priority: "Low",
-      };
-      setTodos([...todos, newTodo]);
-      localStorage.setItem("todos", JSON.stringify([...todos, newTodo]));
-      toast.success("Task added!");
+  const handleAddTodo = async () => {
+    try {
+      if (title == "") {
+        toast.error("Title cannot be empty!");
+      } else {
+        const response = await fetch(url, {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: title,
+            content: content,
+            priority: "Low",
+            completed: false,
+          }),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setTodos([...todos, data.todolist]);
+          localStorage.setItem(
+            "todos",
+            JSON.stringify([...todos, data.todolist]),
+          );
+          toast.success("Task added!");
+        } else {
+          console.log("Todolist create failed.");
+        }
+      }
+    } catch (err) {
+      console.log("Error during create: ", err);
     }
   };
 
@@ -137,6 +144,26 @@ function Todolist() {
     );
   };
 
+  const handleDelete = async (id: string) => {
+    const newTodos = todos.filter((todo: any) => todo.id !== id);
+    try {
+      const response = await fetch(`${url}/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (response.ok) {
+        setTodos(newTodos);
+        localStorage.setItem("todos", JSON.stringify(newTodos));
+        toast.success("Successfully deleted task");
+      } else {
+        console.log("Error during deletion");
+      }
+    } catch (err) {
+      console.log("Error during delete: ", err);
+    }
+  };
+
   return (
     <AnimatedComponents>
       <div
@@ -152,6 +179,7 @@ function Todolist() {
               todos={todos}
               setTodos={setTodos}
               handleEdit={handleEditTodo}
+              handleDelete={handleDelete}
               handleSelectPriority={handleSelectPriority}
             ></TodolistCard>
           ))}
