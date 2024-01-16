@@ -5,9 +5,12 @@ import Link from "next/link";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Dark from "./dark";
 import AnimatedUI from "../animations/animatedui";
+import Logout from "./logout";
 
 function Sidebar({ navigation }: { navigation: any }) {
   const [showSidebar, setShowSidebar] = useState(false);
+
+  const handleLogout = () => {};
 
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
@@ -57,6 +60,10 @@ function Sidebar({ navigation }: { navigation: any }) {
                 {item.name}
               </Link>
             ))}
+            <Logout
+              handleClick={handleLogout}
+              handleShowSidebar={setShowSidebar}
+            />
           </div>
         </div>
       </div>
