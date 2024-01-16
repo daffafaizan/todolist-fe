@@ -40,9 +40,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const refreshTokenExpirationTime = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
     const accessTokenExpirationTime = 15 * 60 * 1000; // 15 minutes in milliseconds
 
-    const checkAccessTokenExpiration = () => {
+    const checkAccessTokenExpiration = async () => {
       if (auth.accessToken) {
         const decodedToken: any = jwtDecode(auth.accessToken);
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`;
 
         if (decodedToken) {
           const issuedAt = decodedToken.iat * 1000; // Convert seconds to milliseconds
@@ -51,6 +52,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           // Check if the token has been in use for a long time and is close to expiration
           if (currentTime - issuedAt > accessTokenExpirationTime / 2) {
             // Access token is older than half of its expiration time, attempt to refresh
+            try {
+              const response = await fetch(url, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${auth.refreshToken}`, // Include the refresh token in the request headers
+                },
+              });
+              if (response.ok) {
+                const data = await response.json();
+                setAuth((prev: any) => {
+                  return { ...prev, accessToken: data.accessToken };
+                });
+                return data.accessToken;
+              } else {
+                console.error("Failed to refresh token.");
+              }
+            } catch (error) {
+              console.error("Error refreshing token: ", error);
+            }
           }
         }
       }

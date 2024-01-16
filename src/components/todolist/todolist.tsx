@@ -159,7 +159,7 @@ function Todolist() {
         }),
       });
       if (response.ok) {
-        toast.success("Successfully changed todo priority!");
+        toast.success(`Task set to ${priority} priority!`);
       } else {
         console.log("Todolist priority change failed.");
       }
@@ -179,7 +179,7 @@ function Todolist() {
       if (response.ok) {
         setTodos(newTodos);
         localStorage.setItem("todos", JSON.stringify(newTodos));
-        toast.success("Successfully deleted task.");
+        toast.success("Task deleted!");
       } else {
         console.log("Todolist delete failed.");
       }
@@ -211,7 +211,10 @@ function Todolist() {
           completed: !todo?.completed,
         }),
       });
-      if (response.ok) {
+      if (response.ok && todo?.completed == true) {
+        toast.success("Task unfinished!");
+      }
+      if (response.ok && todo?.completed == false) {
         toast.success("Task finished!");
       } else {
         console.log("Todolist completion change failed.");
