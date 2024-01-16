@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import useAuth from "@/hooks/useAuth";
+import Cookies from "js-cookie";
 import Link from "next/link";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Dark from "./dark";
@@ -8,9 +11,31 @@ import AnimatedUI from "../animations/animatedui";
 import Logout from "./logout";
 
 function Sidebar({ navigation }: { navigation: any }) {
+  const router = useRouter();
+  const { setAuth } = useAuth();
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`;
   const [showSidebar, setShowSidebar] = useState(false);
 
-  const handleLogout = () => {};
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        Cookies.remove("auth");
+
+        setAuth({ isAuthenticated: false, accessToken: "" });
+
+        router.push("/login");
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
 
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");

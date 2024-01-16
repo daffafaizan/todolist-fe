@@ -7,7 +7,6 @@ function Dark() {
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
-    console.log(savedTheme);
     if (savedTheme) {
       setTheme(savedTheme);
     }

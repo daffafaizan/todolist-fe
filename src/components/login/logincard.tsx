@@ -40,7 +40,7 @@ function LoginCard() {
     }
   };
   return (
-    <div className="dark:text-white text-stone-900 w-64 h-64 max-w-md flex flex-col items-center justify-center p-4 gap-3">
+    <div className="text-stone-900 w-64 h-64 max-w-md flex flex-col items-center justify-center p-4 gap-3">
       <div className="text-2xl underline underline-offset-8 decoration-4 decoration-cyan-500 font-semibold">
         <span>Login</span>
       </div>

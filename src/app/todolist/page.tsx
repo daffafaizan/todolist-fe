@@ -16,7 +16,6 @@ function TodolistPage() {
   const router = useRouter();
   useEffect(() => {
     // Redirect to login if not authenticated
-    console.log(auth.isAuthenticated);
     if (!auth.isAuthenticated) {
       router.replace("/login");
     }
