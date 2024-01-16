@@ -13,8 +13,8 @@ interface Todo {
   id: string;
   title: string;
   content: string;
-  completed: boolean;
   priority: string;
+  completed: boolean;
 }
 
 function Todolist() {
@@ -37,7 +37,7 @@ function Todolist() {
         console.log("Todolist fetch failed.");
       }
     } catch (err) {
-      console.log("Error during fetch: ", err);
+      console.log("Error during fetch in the database: ", err);
     }
   }, [url]);
 
@@ -64,65 +64,76 @@ function Todolist() {
         if (response.ok) {
           const data = await response.json();
           setTodos([...todos, data.todolist]);
-          localStorage.setItem(
-            "todos",
-            JSON.stringify([...todos, data.todolist]),
-          );
           toast.success("Task added!");
         } else {
           console.log("Todolist create failed.");
         }
       }
     } catch (err) {
-      console.log("Error during create: ", err);
+      console.log("Error during create in the database: ", err);
     }
   };
 
-  const handleEditTodo = (
+  const handleEditTodo = async (
     id: string,
     title: string,
     content: string,
-    completed: boolean,
     priority: string,
+    completed: boolean,
   ) => {
-    const todo = todos.find((todo) => todo.id === id);
-    let newTitle: string | undefined;
-    let newContent: string | undefined;
-    if (title == "") {
-      if (content == "") {
-        newTitle = todo?.title;
-        newContent = todo?.content;
+    try {
+      const todo = todos.find((todo) => todo.id === id);
+      let newTitle: string | undefined;
+      let newContent: string | undefined;
+      if (title == "") {
+        if (content == "") {
+          newTitle = todo?.title;
+          newContent = todo?.content;
+        } else {
+          newTitle = todo?.title;
+          newContent = content;
+        }
       } else {
-        newTitle = todo?.title;
-        newContent = content;
+        if (content == "") {
+          newTitle = title;
+          newContent = todo?.content;
+        } else {
+          newTitle = title;
+          newContent = content;
+        }
       }
-    } else {
-      if (content == "") {
-        newTitle = title;
-        newContent = todo?.content;
-      } else {
-        newTitle = title;
-        newContent = content;
-      }
-    }
 
-    const editedTodo = {
-      id: id,
-      title: newTitle,
-      content: newContent,
-      completed: completed,
-      priority: priority,
-    };
-    setTodos((prevState: any) =>
-      prevState.map((todo: any) =>
-        todo["id"] === editedTodo["id"] ? editedTodo : todo,
-      ),
-    );
-    const updatedTodos = todos.map((todo) =>
-      todo.id === editedTodo.id ? editedTodo : todo,
-    );
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
-    toast.success("Successfully edit todo!");
+      const editedTodo = {
+        id: id,
+        title: newTitle,
+        content: newContent,
+        priority: priority,
+        completed: completed,
+      };
+      setTodos((prevState: any) =>
+        prevState.map((todo: any) =>
+          todo["id"] === editedTodo["id"] ? editedTodo : todo,
+        ),
+      );
+      const response = await fetch(`${url}/${id}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title,
+          content: content,
+          priority: priority,
+          completed: completed,
+        }),
+      });
+      if (response.ok) {
+        toast.success("Successfully edited todo!");
+      } else {
+        console.log("Todolist edit failed.");
+      }
+    } catch (err) {
+      console.log("Error during edit in the database: ", err);
+    }
   };
 
   const handleSelectPriority = (id: string, priority: string) => {
@@ -155,12 +166,12 @@ function Todolist() {
       if (response.ok) {
         setTodos(newTodos);
         localStorage.setItem("todos", JSON.stringify(newTodos));
-        toast.success("Successfully deleted task");
+        toast.success("Successfully deleted task.");
       } else {
-        console.log("Error during deletion");
+        console.log("Todolist delete failed.");
       }
     } catch (err) {
-      console.log("Error during delete: ", err);
+      console.log("Error during delete in the database: ", err);
     }
   };
 
