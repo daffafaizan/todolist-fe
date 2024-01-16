@@ -7,7 +7,11 @@ const useAuth = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!auth.isAuthenticated) {
+    // Exclude login and register pages from redirection
+    const allowedPages = ["/login", "/register"];
+    const currentPath = window.location.pathname;
+
+    if (!auth.isAuthenticated && !allowedPages.includes(currentPath)) {
       router.replace("/login");
     }
   }, [auth, router]);

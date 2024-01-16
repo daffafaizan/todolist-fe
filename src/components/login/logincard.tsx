@@ -29,7 +29,11 @@ function LoginCard() {
 
         setUsername("");
         setPassword("");
-        setAuth({ isAuthenticated: true, accessToken: data.accessToken });
+        setAuth({
+          isAuthenticated: true,
+          accessToken: data.data.accessToken,
+          refreshToken: data.data.refreshToken,
+        });
 
         router.push("/todolist");
       } else {
