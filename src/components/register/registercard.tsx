@@ -10,8 +10,33 @@ function RegisterCard() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confPassword, setConfPassword] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [userExistsError, setUserExistsError] = useState("");
+  const [registerError, setRegisterError] = useState("");
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
+    if (username.length < 3 || username.length > 25) {
+      setUsernameError("Username too long or too short");
+      return;
+    } else {
+      setUsernameError("");
+    }
+
+    if (password.length < 7 || password.length > 30) {
+      setPasswordError("Password too long or too short");
+      return;
+    } else {
+      setPasswordError("");
+    }
+
+    if (password !== confPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    } else {
+      setPasswordError("");
+    }
 
     try {
       const response = await fetch(url, {
@@ -31,6 +56,10 @@ function RegisterCard() {
         setConfPassword("");
 
         push("/login");
+      } else if (response.status === 403) {
+        setUserExistsError("User already exists");
+      } else if (response.status === 400) {
+        setRegisterError("Invalid credentials");
       } else {
         console.error("Registration failed");
       }
@@ -45,25 +74,40 @@ function RegisterCard() {
       </div>
       <form
         onSubmit={handleSubmit}
-        className="mt-4 flex flex-col items-center gap-2"
+        className="w-full mt-4 flex flex-col items-center gap-2"
       >
         <input
-          className="w-full rounded-md bg-[#edefe7] placeholder:text-sm px-2 py-1"
+          className={`w-full rounded-md bg-[#edefe7] ${
+            registerError ? "border border-red-500" : "border-transparent"
+          } placeholder:text-sm px-2 py-1`}
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.currentTarget.value)}
           required
         />
         <input
-          className="w-full rounded-md bg-[#edefe7] placeholder:text-sm px-2 py-1"
+          className={`w-full rounded-md bg-[#edefe7] ${
+            registerError || usernameError || userExistsError
+              ? "border border-red-500"
+              : "border-transparent"
+          } placeholder:text-sm px-2 py-1`}
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.currentTarget.value)}
           required
         />
+        {usernameError && (
+          <div className="w-full flex justify-center items-center">
+            <span className="text-[10px] text-red-500">{usernameError}</span>
+          </div>
+        )}
         <input
           type="password"
-          className="w-full rounded-md bg-[#edefe7] placeholder:text-sm px-2 py-1"
+          className={`w-full rounded-md bg-[#edefe7] ${
+            registerError || passwordError
+              ? "border border-red-500"
+              : "border-transparent"
+          } placeholder:text-sm px-2 py-1`}
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.currentTarget.value)}
@@ -71,12 +115,31 @@ function RegisterCard() {
         />
         <input
           type="password"
-          className="w-full rounded-md bg-[#edefe7] placeholder:text-sm px-2 py-1"
+          className={`w-full rounded-md bg-[#edefe7] ${
+            registerError || passwordError
+              ? "border border-red-500"
+              : "border-transparent"
+          } placeholder:text-sm px-2 py-1`}
           placeholder="Confirm password"
           value={confPassword}
           onChange={(e) => setConfPassword(e.currentTarget.value)}
           required
         />
+        {passwordError && (
+          <div className="w-full flex justify-center items-center">
+            <span className="text-[10px] text-red-500">{passwordError}</span>
+          </div>
+        )}
+        {userExistsError && (
+          <div className="w-full flex justify-center items-center">
+            <span className="text-[10px] text-red-500">{userExistsError}</span>
+          </div>
+        )}
+        {registerError && (
+          <div className="w-full flex justify-center items-center">
+            <span className="text-[10px] text-red-500">{registerError}</span>
+          </div>
+        )}
         <button className="mt-4 w-full inline-flex justify-center rounded-md border border-transparent bg-cyan-500 px-2 py-1 text-sm font-medium text-white hover:bg-cyan-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
           Sign up
         </button>

@@ -10,6 +10,7 @@ function LoginCard() {
   const { setAuth } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
@@ -36,6 +37,10 @@ function LoginCard() {
         });
 
         router.push("/todolist");
+      } else if (response.status === 404) {
+        setLoginError("Username not found");
+      } else if (response.status === 400) {
+        setLoginError("Invalid credentials");
       } else {
         console.error("Login failed");
       }
@@ -50,10 +55,12 @@ function LoginCard() {
       </div>
       <form
         onSubmit={handleSubmit}
-        className="mt-4 flex flex-col items-center gap-2"
+        className="w-full mt-4 flex flex-col items-center gap-2"
       >
         <input
-          className="w-full rounded-md bg-[#edefe7] placeholder:text-sm px-2 py-1"
+          className={`w-full rounded-md bg-[#edefe7] ${
+            loginError ? "border border-red-500" : "border-transparent"
+          } placeholder:text-sm px-2 py-1`}
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.currentTarget.value)}
@@ -61,12 +68,19 @@ function LoginCard() {
         />
         <input
           type="password"
-          className="w-full rounded-md bg-[#edefe7] placeholder:text-sm px-2 py-1"
+          className={`w-full rounded-md bg-[#edefe7] ${
+            loginError ? "border border-red-500" : "border-transparent"
+          } placeholder:text-sm px-2 py-1`}
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.currentTarget.value)}
           required
         />
+        {loginError && (
+          <div className="w-full flex justify-center items-center">
+            <span className="text-[10px] text-red-500">{loginError}</span>
+          </div>
+        )}
         <button className="mt-4 w-full inline-flex justify-center rounded-md border border-transparent bg-cyan-500 px-2 py-1 text-sm font-medium text-white hover:bg-cyan-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
           Sign in
         </button>
