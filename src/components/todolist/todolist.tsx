@@ -136,23 +136,37 @@ function Todolist() {
     }
   };
 
-  const handleSelectPriority = (id: string, priority: string) => {
-    setTodos((prevTodos: any) =>
-      prevTodos.map((todo: any) => {
-        if (todo.id === id) {
-          const updatedTodo = { ...todo, priority: priority };
-          toast.success(`Task set to ${priority} priority!`);
-          localStorage.setItem(
-            "todos",
-            JSON.stringify(
-              prevTodos.map((t: any) => (t.id === id ? updatedTodo : t)),
-            ),
-          );
-          return updatedTodo;
-        }
-        return todo;
-      }),
-    );
+  const handleSelectPriority = async (id: string, priority: string) => {
+    try {
+      const todo = todos.find((todo) => todo.id === id);
+      const editedTodo = {
+        id: id,
+        title: todo?.title,
+        content: todo?.content,
+        priority: priority,
+        completed: todo?.completed,
+      };
+      setTodos((prevState: any) =>
+        prevState.map((todo: any) =>
+          todo["id"] === editedTodo["id"] ? editedTodo : todo,
+        ),
+      );
+      const response = await fetch(`${url}/${id}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          priority: priority,
+        }),
+      });
+      if (response.ok) {
+        toast.success("Successfully changed todo priority!");
+      } else {
+        console.log("Todolist priority change failed.");
+      }
+    } catch (err) {
+      console.log("Error during priority edit in the database: ", err);
+    }
   };
 
   const handleDelete = async (id: string) => {
