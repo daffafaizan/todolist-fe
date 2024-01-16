@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { uuid } from "uuidv4";
 import toast from "react-hot-toast";
 
 import Title from "../utils/title";
@@ -234,8 +233,6 @@ function Todolist() {
             <TodolistCard
               key={todo.id}
               todo={todo}
-              todos={todos}
-              setTodos={setTodos}
               handleEdit={handleEditTodo}
               handleDelete={handleDelete}
               handleToggleCompleted={handleToggleCompleted}

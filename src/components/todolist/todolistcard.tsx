@@ -4,23 +4,18 @@ import { Fragment, useState } from "react";
 import { Icon } from "@iconify/react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import toast from "react-hot-toast";
 
 import EditTaskForm from "./forms/edittaskform";
 import PriorityDropdown from "./utils/prioritydropdown";
 
 function TodolistCard({
   todo,
-  todos,
-  setTodos,
   handleEdit,
   handleDelete,
   handleToggleCompleted,
   handleSelectPriority,
 }: {
   todo: any;
-  todos: any;
-  setTodos: any;
   handleEdit: any;
   handleDelete: any;
   handleToggleCompleted: any;
