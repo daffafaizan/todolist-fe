@@ -15,6 +15,7 @@ function TodolistCard({
   setTodos,
   handleEdit,
   handleDelete,
+  handleToggleCompleted,
   handleSelectPriority,
 }: {
   todo: any;
@@ -22,6 +23,7 @@ function TodolistCard({
   setTodos: any;
   handleEdit: any;
   handleDelete: any;
+  handleToggleCompleted: any;
   handleSelectPriority: any;
 }) {
   let [isOpen, setIsOpen] = useState(false);
@@ -33,27 +35,6 @@ function TodolistCard({
   function openModal() {
     setIsOpen(true);
   }
-
-  const handleToggleCompleted = (id: string) => {
-    setTodos((prevTodos: any) =>
-      prevTodos.map((todo: any) => {
-        if (todo.id === id) {
-          const updatedTodo = { ...todo, completed: !todo.completed };
-          if (updatedTodo.completed) {
-            toast.success("Task finished!");
-          }
-          localStorage.setItem(
-            "todos",
-            JSON.stringify(
-              prevTodos.map((t: any) => (t.id === id ? updatedTodo : t)),
-            ),
-          );
-          return updatedTodo;
-        }
-        return todo;
-      }),
-    );
-  };
 
   return (
     <>

@@ -164,6 +164,27 @@ function Todolist() {
     }
   };
 
+  const handleToggleCompleted = (id: string) => {
+    setTodos((prevTodos: any) =>
+      prevTodos.map((todo: any) => {
+        if (todo.id === id) {
+          const updatedTodo = { ...todo, completed: !todo.completed };
+          if (updatedTodo.completed) {
+            toast.success("Task finished!");
+          }
+          localStorage.setItem(
+            "todos",
+            JSON.stringify(
+              prevTodos.map((t: any) => (t.id === id ? updatedTodo : t)),
+            ),
+          );
+          return updatedTodo;
+        }
+        return todo;
+      }),
+    );
+  };
+
   return (
     <AnimatedComponents>
       <div
@@ -180,6 +201,7 @@ function Todolist() {
               setTodos={setTodos}
               handleEdit={handleEditTodo}
               handleDelete={handleDelete}
+              handleToggleCompleted={handleToggleCompleted}
               handleSelectPriority={handleSelectPriority}
             ></TodolistCard>
           ))}
