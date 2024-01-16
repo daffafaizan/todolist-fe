@@ -189,25 +189,37 @@ function Todolist() {
     }
   };
 
-  const handleToggleCompleted = (id: string) => {
-    setTodos((prevTodos: any) =>
-      prevTodos.map((todo: any) => {
-        if (todo.id === id) {
-          const updatedTodo = { ...todo, completed: !todo.completed };
-          if (updatedTodo.completed) {
-            toast.success("Task finished!");
-          }
-          localStorage.setItem(
-            "todos",
-            JSON.stringify(
-              prevTodos.map((t: any) => (t.id === id ? updatedTodo : t)),
-            ),
-          );
-          return updatedTodo;
-        }
-        return todo;
-      }),
-    );
+  const handleToggleCompleted = async (id: string) => {
+    try {
+      const todo = todos.find((todo) => todo.id === id);
+      const editedTodo = {
+        id: id,
+        title: todo?.title,
+        content: todo?.content,
+        priority: todo?.priority,
+        completed: !todo?.completed,
+      };
+      setTodos((prevState: any) =>
+        prevState.map((todo: any) =>
+          todo["id"] === editedTodo["id"] ? editedTodo : todo,
+        ),
+      );
+      const response = await fetch(`${url}/${id}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          completed: !todo?.completed,
+        }),
+      });
+      if (response.ok) {
+        toast.success("Task finished!");
+      } else {
+        console.log("Todolist completion change failed.");
+      }
+    } catch (err) {
+      console.log("Error during completion edit in the database: ", err);
+    }
   };
 
   return (
