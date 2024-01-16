@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { uuid } from "uuidv4";
 import toast from "react-hot-toast";
 
@@ -18,21 +18,41 @@ interface Todo {
 }
 
 function Todolist() {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/todolist`;
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [todos, setTodos] = useState<Todo[]>([]);
+
+  const handleGetAllTodo = useCallback(async () => {
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+      } else {
+        console.log("Todolist fetch failed.");
+      }
+    } catch (err) {
+      console.log("Error during fetch: ", err);
+    }
+  }, [url]);
 
   useEffect(() => {
     //localStorage.clear() // Debug clear
     try {
       const storedTodos = JSON.parse(localStorage.getItem("todos") ?? "[]");
+      handleGetAllTodo();
       if (Array.isArray(storedTodos)) {
         setTodos(storedTodos);
       }
     } catch (error) {
       console.error("Error parsing JSON from local storage:", error);
     }
-  }, []);
+  }, [handleGetAllTodo]);
 
   const handleAddTodo = () => {
     if (title == "") {

@@ -6,7 +6,9 @@ import {
   ReactNode,
   Dispatch,
   SetStateAction,
+  useEffect,
 } from "react";
+import Cookies from "js-cookie";
 
 type AuthState = {
   isAuthenticated: boolean;
@@ -24,7 +26,17 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [auth, setAuth] = useState<AuthState>({ isAuthenticated: false });
+  const [auth, setAuth] = useState<AuthState>(() => {
+    const storedAuth = Cookies.get("auth");
+    return storedAuth ? JSON.parse(storedAuth) : { isAuthenticated: false };
+  });
+  useEffect(() => {
+    const expirationTime = 15 * 60 * 1000; // 15 minutes in milliseconds
+
+    const cookieExpiration = new Date(new Date().getTime() + expirationTime);
+
+    Cookies.set("auth", JSON.stringify(auth), { expires: cookieExpiration });
+  }, [auth]);
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>
       {children}
